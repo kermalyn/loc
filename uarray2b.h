@@ -2,7 +2,7 @@
 #define UArray2B_INCLUDED
 
 
-#define T Array2b_T
+#define T UArray2b_T
 
 typedef struct T *T;
 
