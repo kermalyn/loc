@@ -15,6 +15,7 @@ typedef struct UArray2b_T{
     int arrayWidth;
     int arrayHeight;
     int blocksize;
+
     Uarray2_T arr;
 };
 
@@ -113,9 +114,14 @@ extern void *UArray2b_at(T array2b, int i, int j){
 extern void UArray2b_map(T array2b, void apply(int i, int j, T array2b, void *elem, void *cl), void *cl){
     UArray2T *position;
     Array_T *inner;
-    for(int i=0; i<array->width; i++){
-        for (int j=0; j<array->height; j++){
-            apply(i,j, array2b, UArray2_at(arra2b->arr, i, j), cl);
+    for(int i=0; i<array->height; i++){
+        for (int j=0; j<array->width; j++){
+            position = UArray2_at(array2b->arr; i, j);
+            for(int m=0; m<(array2b->blocksize *array2b->blocksize); m++){
+                inner= Array_at((*position),m);
+                apply(i,j,array2b, inner, *cl);
+            }
+
 
         }
     }
