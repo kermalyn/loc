@@ -3,9 +3,6 @@
 #include "math.h"
 #include "uarray2b.h"
 #include "uarray2.h"
-
-
-
 #define T UArray2b_T
 
 struct T{
@@ -40,7 +37,15 @@ T UArray2b_new (int width, int height, int size, int blockSize){
 
 /* new blocked 2d array: blocksize as large as possible provided
      block occupies at most 64KB (if possible) */
-T UArray2b_new_64K_block(int width, int height, int size);
+T UArray2b_new_64K_block(int width, int height, int size){
+    int blockSize;
+    if(size < 64000){
+        blockSize = 64000/size;
+    }else{
+        blockSize  = 0;
+    }
+    return  UArray2b_new(width,height,size,blockSize);
+}
 
 
 void UArray2b_free (T *array2b){
@@ -60,18 +65,21 @@ int UArray2b_size (T array2b){return array2b->arraySize;}
 int UArray2b_blockSize(T array2b){return array2b->blockSize;}
 
 
+//void *UArray2b_at(T array2b, int i, int j){
+//    if(array2b->blockSize ==1){
+//        return(UArray2_at(array2b->arr, i, j));
+//    }
+//
+//    Array_T *block_number= UArray2_at(array2b->arr,(i/array2b->blockSize), (j/array2b->blockSize));
+//
+//    //within the block get the cell and return it
+//    return(Array_get((*block_number), ((array2b->blockSize * i%(array2b->blockSize)) +j %(array2b->blockSize))));
+//}
+
 void *UArray2b_at(T array2b, int i, int j){
-    if(array2b->blockSize ==1){
-        return(UArray2_at(array2b->arr, i, j));
-    }
-
-    Array_T *block_number= UArray2_at(array2b->arr,(i/array2b->blockSize), (j/array2b->blockSize));
-
-    //within the block get the cell and return it
-    return(Array_get((*block_number), ((array2b->blockSize * i%(array2b->blockSize)) +j %(array2b->blockSize))));
+    UArray2_T *inner_block = UArray2_at(array2b->arr,(i/array2b->blockSize), (j/array2b->blockSize));
+    return(UArray2_at((*inner_block),i%(array2b->blockSize), j %(array2b->blockSize)));
 }
-
-
 void UArray2b_map(T array2b, void apply(int i, int j, T array2b, void *elem, void *cl), void *cl){
     int width = ceil(array2b->arrayWidth / array2b->blockSize);
     int height = ceil(array2b->arrayHeight / array2b->blockSize);
@@ -79,11 +87,19 @@ void UArray2b_map(T array2b, void apply(int i, int j, T array2b, void *elem, voi
     int total = width * height;
     for(int i = 0; i < total; i++){
         for(int j = 0; j < blockSquare; j++){
-            //
-//            int x = i*array2b->blockSize + i%array2b->blockSize;
-//            int y = j*array2b->blockSize + j/array2b->blockSize;
             int x = i / width + j/array2b->blockSize;
             int y = i % width + j% array2b->blockSize;
+            (void)y;
+            (void)x;
+            (void)cl;
+            (void)apply;
+
+//            apply(x,y,array2b,UArray2b_at(array2b,x,y),cl);
+            printf("%s\n","nothing");
         }
     }
+}
+
+int main(){
+
 }
