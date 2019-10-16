@@ -61,4 +61,3 @@ static struct A2Methods_T array2_methods_plain_struct = {
 
 
 A2Methods_T array2_methods_plain = &array2_methods_plain_struct;
-
