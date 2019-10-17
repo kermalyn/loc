@@ -4,6 +4,7 @@
 #include "a2methods.h"
 #include "a2plain.h"
 #include "a2blocked.h"
+#include "uarray2.h"
 
 
 #define W 13
