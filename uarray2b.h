@@ -1,3 +1,8 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include "math.h"
+#include "uarray2.h"
+
 #ifndef UArray2B_INCLUDED
 #define UArray2B_INCLUDED
 
