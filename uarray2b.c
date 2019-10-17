@@ -17,7 +17,8 @@ struct T{
 /* new blocked 2d array: blocksize = square root of # of cells in block */
 T UArray2b_new (int width, int height, int size, int blockSize){
     //create the space for the blocked array
-    UArray2b_T blockArray= malloc(sizeof(*blockArray));
+    T blockArray;
+    NEW(blockArray);
     //Calculate the block width and block height
     int blockHeight = (int)ceil(height/blockSize);
     int blockWidth = (int)ceil( width/blockSize);
@@ -89,17 +90,8 @@ void UArray2b_map(T array2b, void apply(int i, int j, T array2b, void *elem, voi
         for(int j = 0; j < blockSquare; j++){
             int x = i / width + j/array2b->blockSize;
             int y = i % width + j% array2b->blockSize;
-            (void)y;
-            (void)x;
-            (void)cl;
-            (void)apply;
-
-//            apply(x,y,array2b,UArray2b_at(array2b,x,y),cl);
-            printf("%s\n","nothing");
+            apply(x,y,array2b,UArray2b_at(array2b,x,y),cl);
         }
     }
 }
 
-int main(){
-
-}
