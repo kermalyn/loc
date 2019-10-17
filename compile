@@ -37,20 +37,20 @@ done
 # using one case statement per executable binary
 case $link in
   all|a2test) gcc $FLAGS $LFLAGS -o a2test a2test.o \
-                  uarray2b.o a2plain.o \
-                  $LIBS 
+                  uarray2b.o uarray2.o a2plain.o \
+                  $LIBS
               linked=yes ;;
 esac
 
 case $link in
   all|ppmtrans) gcc $FLAGS $LFLAGS -o ppmtrans ppmtrans.o \
-                  remaining-objects-and-libraries-need-filling-in-here.o
+                  uarray2b.o uarray2.o a2blocked.o a2plain.o
                   linked=yes ;;
 esac
 
 # error if asked to link something we didn't recognize
 if [ $linked = no ]; then
-  case $link in  # if the -link option makes no sense, complain 
+  case $link in  # if the -link option makes no sense, complain
     none) ;; # OK, do nothing
     *) echo "`basename $0`: don't know how to link $link" 1>&2 ; exit 1 ;;
   esac
