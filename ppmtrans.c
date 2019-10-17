@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include "mem.h"
 #include "assert.h"
 #include "a2methods.h"
 #include "a2plain.h"
 #include "a2blocked.h"
 #include "pnm.h"
 
+//void temp(){return;}
+
 typedef  A2Methods_Array2 A2; //like the a2blocked kinda
 Pnm_ppm translation(int rotation, Pnm_ppm image, A2Methods_mapfun *map, A2Methods_T method);
-void *rotate90(int i, int j ,A2 image, void *elem, void *transformed);
+void rotate90(int i, int j ,A2 image, void *elem, void *transformed);
 
 int main(int argc, char *argv[]) {
     FILE* input;
@@ -69,70 +71,26 @@ int main(int argc, char *argv[]) {
 }
 
 
-Pnm_ppm translation(int rotation, Pnm_ppm image, A2Methods_mapfun *map, A2Methods_T method){
-    Pnm_ppm new_image= malloc(sizeof(*image));
-
+Pnm_ppm translation(int rotation, Pnm_ppm image, A2Methods_mapfun *map, A2Methods_T methods){
+    Pnm_ppm new_image;
+    NEW(new_image);
     if(rotation==0){
         Pnm_ppmwrite(stdout, image);
+    }else if(rotation == 90){
+        new_image->width= image->height;
+        new_image->height= image->width;
+        new_image->pixels = methods->new(new_image->height,new_image->width, sizeof(Pnm_rgb));
+        methods->at(image->pixels, rotate90, new_image);
+        Pnm_ppmwrite(stdout, new_image);
+
     }
-    if(rotation == 90){
-
-        new_image->width= image->height;
-        new_image->height= image->width;
-        map(image->pixels, rotate90, new_image);
-        Pnm_ppmwrite(stdout, new_image);
-
-    } elseif(rotation ==180){
-        Pnm_ppm temp_image= malloc(sizeof(*image));
-        temp_image->width= image->height;
-        temp_image->height= image->width;
-
-        new_image->width= image->height;
-        new_image->height= image->width;
-
-        map(image->pixels, rotate90, temp_image);
-        map(temp->pixels, rotate90, new_image);
-        Pnm_ppmwrite(stdout, new_image);
-        free()
-    }else{
-        Pnm_ppm temp_image= malloc(sizeof(*image));
-        temp_image->width= image->height;
-        temp_image->height= image->width;
-
-        Pnm_ppm temp2_image= malloc(sizeof(*image));
-        temp2_image->width= image->height;
-        temp2_image->height= image->width;
-
-        new_image->width= image->height;
-        new_image->height= image->width;
-
-        map(image->pixels, rotate90, temp_image);
-        map(temp->pixels, rotate90, temp2_image);
-        map(temp2->pixels, rotate90, new_image);
-
-        Pnm_ppmwrite(stdout, new_image);
-    }
-
 }
 
-void *rotate90(int i, int j, A2 oldImage, void *elem, void *transformed){
+void rotate90(int i, int j, A2 oldImage, void *elem, void *transformed){
     A2 newImage =  transformed; //sets the 2D array to a2methods_2darray
     Pnm_rgb final_pos = elem; //makes the positon of current element which contains a rgb value
-    Pnm_rgb location=  map(new_image, methods->width(image)-i-1, i);
-    *location = *final_pos;
-
-}
-
-void *rotate180(int i, int j, A2 oldImage, void *elem, void *transformed){
-    A2 newImage =  transformed; //sets the 2D array to a2methods_2darray
-    Pnm_rgb final_pos = elem; //makes the positon of current element which contains a rgb value
-    Pnm_rgb location=  map(new_image, methods->width(image)-i-1,methods->height(image)-j-1 );
+    Pnm_rgb location=  methods->at(new_image, methods->width(image)-i-1, i);
     *location = *final_pos;
 }
 
-void *rotate270(int i, int j, A2 oldImage, void *elem, void *transformed){
-    A2 newImage =  transformed; //sets the 2D array to a2methods_2darray
-    Pnm_rgb final_pos = elem; //makes the positon of current element which contains a rgb value
-    Pnm_rgb location=  map(new_image, methods->width(image)-i-1);
-    *location = *final_pos;
-}
+int main(){}
