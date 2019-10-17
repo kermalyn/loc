@@ -1,3 +1,4 @@
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "array.h"
@@ -53,21 +54,19 @@ void *UArray2_at(T array, int x_i, int y_i) {
     return (Array_get(*innerArray, y_i));
 }
 
-void UArray2_map_row_major(T array2, void apply(int width, int height, T array2, int* elems, void *cl), void *cl){
+void UArray2_map_col_major(T array2, void apply(int width, int height, T array2, int* elems, void *cl), void *cl){
     for(int i = 0; i < array2->width; i++){
         for(int j = 0; j< array2->height; j++){
-            Array_T *outer= Array_get(array2->outerArray, i);
-            int* elems = Array_get(*outer,j);
+            int* elems = UArray2_at(array2,i,j);
             apply(i,j,array2,elems,cl);
         }
     }
 }
 
-void UArray2_map_col_major(T array2, void apply(int width, int height, T array2, int* elems, void *cl), void *cl){
+void UArray2_map_row_major(T array2, void apply(int width, int height, T array2, int* elems, void *cl), void *cl){
     for(int i = 0; i < array2->height; i++){
         for(int j = 0; j< array2->width; j++){
-            Array_T outer= Array_get(array2->outerArray, i);
-            void* elems = Array_get(outer,j);
+            int* elems = UArray2_at(array2,j,i);
             apply(i,j,array2,elems,cl);
         }
     }
