@@ -79,6 +79,7 @@ void translation(int rotation, Pnm_ppm image, A2Methods_mapfun *map, A2Methods_T
         Pnm_ppmwrite(stdout, image);
 
     }else{
+
         Pnm_ppm new_image = methods->new(image->height, image->width, sizeof(Pnm_rgb));
         map(image, rotate90, new_image);
         Pnm_ppmwrite(stdout, new_image);
@@ -91,7 +92,6 @@ void rotate90(int i, int j, A2 oldImage, void *elem, void *transformed){
     Pnm_ppm newImage =  transformed; //sets the 2D array to a2methods_2darray
     const struct A2Methods_T *methods = newImage->methods;
     Pnm_rgb final_pos = elem; //makes the positon of current element which contains a rgb value
-    j=i;
     Pnm_rgb location=  methods->at(newImage, methods->width(oldImage)-i-1, j);
     *location = *final_pos;
 }
