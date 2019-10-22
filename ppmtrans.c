@@ -1,21 +1,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "mem.h"
 #include "assert.h"
+#include "except.h"
 #include "a2methods.h"
 #include "a2plain.h"
 #include "a2blocked.h"
 #include "pnm.h"
 
-//void temp(){return;}
-
-typedef  A2Methods_Array2 A2; //like the a2blocked kinda
-Pnm_ppm translation(int rotation, Pnm_ppm image, A2Methods_mapfun *map, A2Methods_T method);
-void rotate90(int i, int j ,A2 image, void *elem, void *transformed);
+#define A2Methods_Array2 A2;
+//void transform(int rotation, Pnm_ppm image,A2Methods_T method);
 
 int main(int argc, char *argv[]) {
-    FILE* input;
     int rotation = 0;
     A2Methods_T methods = array2_methods_plain; // default to UArray2 methods
     assert(methods);
@@ -43,9 +41,11 @@ int main(int argc, char *argv[]) {
             assert(i + 1 < argc);
             char *endptr;
             rotation = strtol(argv[++i], &endptr, 10);
-            assert(*endptr == '\0'); // parsed all correctly
+            //if(rotation == 90){ translation(rotation, image, map, methods);}
+            assert(*endptr == '\0'); // parsed all correctly #aborts here
             assert(rotation == 0   || rotation == 90
                    || rotation == 180 || rotation == 270);
+            //if(rotation == 90){ translation(rotation, image, map, methods);}
         } else if (*argv[i] == '-') {
             fprintf(stderr, "%s: unknown option '%s'\n", argv[0], argv[i]);
             exit(1);
@@ -57,40 +57,60 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    //assert(0); // the rest of this function is not yet implemented
-    if(i<=argc-1){
-        input= fopen(argv[i],"r");
+    FILE *file;
+    file  = fopen(argv[argc-1],"r");
+
+    Pnm_ppm image;
+
+    if(file != NULL){
+        image = Pnm_ppmread(file,methods);
     }else{
-        input = stdin;
+        image = Pnm_ppmread(stdin,methods);
     }
-    assert(input!=NULL);
-    Pnm_ppm image= Pnm_ppmread(input, methods);
-    translation(rotation, image, map, methods);
-
-    fclose(input);
-}
-
-
-Pnm_ppm translation(int rotation, Pnm_ppm image, A2Methods_mapfun *map, A2Methods_T methods){
-    Pnm_ppm new_image;
-    NEW(new_image);
-    if(rotation==0){
-        Pnm_ppmwrite(stdout, image);
-    }else if(rotation == 90){
-        new_image->width= image->height;
-        new_image->height= image->width;
-        new_image->pixels = methods->new(new_image->height,new_image->width, sizeof(Pnm_rgb));
-        methods->at(image->pixels, rotate90, new_image);
-        Pnm_ppmwrite(stdout, new_image);
-
+    FILE *imgout = NULL;
+    printf("%s\n","meow");
+    if (rotation == 0){
+        imgout = fopen("trans.pgm", "w+");//writing out image
+        Pnm_ppmwrite(imgout, image);
+        fclose(imgout);
+        Pnm_ppmfree(&image);
     }
+    fclose(file);
+//    transform(rotation,image,methods);
 }
 
-void rotate90(int i, int j, A2 oldImage, void *elem, void *transformed){
-    A2 newImage =  transformed; //sets the 2D array to a2methods_2darray
-    Pnm_rgb final_pos = elem; //makes the positon of current element which contains a rgb value
-    Pnm_rgb location=  methods->at(new_image, methods->width(image)-i-1, i);
-    *location = *final_pos;
-}
 
-int main(){}
+//
+//void transform(int rotation, Pnm_ppm image,A2Methods_T methods){
+//    (void)rotation;
+//    Pnm_ppm newImage;
+//    NEW(newImage);
+//    newImage->methods=methods;
+//    newImage->width = image->width;
+//    newImage->height = image->height;
+//    newImage->denominator = image->denominator;
+//}
+//
+//
+//
+//void translation(int rotation, Pnm_ppm image,A2Methods_mapfun *map, A2Methods_T methods){
+//    Pnm_ppm newImage;
+//    NEW(newImage);
+//    (void)map;
+//    (void)rotation;
+//    newImage->width = image->width;
+//    newImage->height = image-> height;
+//    newImage->denominator = image->denominator;
+//    newImage->pixels = image->pixels;
+//    newImage->methods = methods->new(newImage->width,newImage->height, sizeof(Pnm_rgb));
+//    if(rotation == 0) {
+//        FILE *out = NULL;
+//        out = fopen("test.pgm", "wb");
+//        Pnm_ppmwrite(out, image);
+//    }
+//////        new_image= createImage(image,new_image,new_image->width,new_image->height);
+//////        map(image->pixels, rotate0, new_image);
+////    }
+//}
+//
+//
