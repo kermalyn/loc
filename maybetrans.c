@@ -97,7 +97,6 @@ void rotate90(int i, int j ,A2 image, void *elem, void *transformed){
     *dk = *final_pos;
 }
 
-
 void transform(int rotation, Pnm_ppm image,A2Methods_mapfun *map,A2Methods_T methods){
     Pnm_ppm newImage;
     NEW(newImage);
@@ -105,33 +104,22 @@ void transform(int rotation, Pnm_ppm image,A2Methods_mapfun *map,A2Methods_T met
     newImage->width = image->height;
     newImage->height = image->width;
     newImage->denominator = image->denominator;
-    newImage->pixels = methods->new(newImage->width,newImage->height, methods->size(image->pixels));
+    newImage->pixels = methods->new(newImage->height,newImage->width, sizeof(Pnm_rgb));
     if(rotation == 90){
         map(image->pixels, rotate90, newImage);
         Pnm_ppmwrite(stdout, newImage);
-
     }
     //pnmtoplainpnm
 }
-//
-//
 
-//void translation(int rotation, Pnm_ppm image,A2Methods_mapfun *map, A2Methods_T methods){
-//    Pnm_ppm newImage;
-//    NEW(newImage);
-//    (void)map;
-//    (void)rotation;
-//    newImage->width = image->width;
-//    newImage->height = image-> height;
-//    newImage->denominator = image->denominator;
-//    newImage->pixels = image->pixels;
-//    newImage->methods = methods->new(newImage->width,newImage->height, sizeof(Pnm_rgb));
-//    if(rotation == 0) {
-//        FILE *out = NULL;
-//        out = fopen("test.pgm", "wb");
-//        Pnm_ppmwrite(out, image);
-//    }
-//}
+
+
+
+
+
+
+
+
 
 
 
